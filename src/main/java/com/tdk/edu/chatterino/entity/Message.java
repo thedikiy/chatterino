@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Message {
@@ -13,13 +13,8 @@ public class Message {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @ManyToOne
-  private User author;
-
+  @NotEmpty
   private String content;
-
-  public Message() {
-  }
 
   public String getContent() {
     return content;
@@ -29,18 +24,9 @@ public class Message {
     this.content = content;
   }
 
-  public User getAuthor() {
-    return author;
-  }
-
-  public void setAuthor(User author) {
-    this.author = author;
-  }
-
   @Override
   public String toString() {
     return "Message{" +
-        "author=" + author +
         ", content='" + content + '\'' +
         '}';
   }
@@ -56,13 +42,16 @@ public class Message {
 
     Message message = (Message) o;
 
-    return author.equals(message.author) && content.equals(message.content);
+    if (id != null ? !id.equals(message.id) : message.id != null) {
+      return false;
+    }
+    return content != null ? content.equals(message.content) : message.content == null;
   }
 
   @Override
   public int hashCode() {
-    int result = author.hashCode();
-    result = 31 * result + content.hashCode();
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (content != null ? content.hashCode() : 0);
     return result;
   }
 }

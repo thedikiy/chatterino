@@ -22,7 +22,6 @@ public class ChatEventHandler {
   @MessageMapping("/hello")
   @SendTo("/topic/greetings")
   public String greeting(Message message) throws Exception {
-    Thread.sleep(1000); // simulated delay
     return HtmlUtils.htmlEscape(messageRepository.save(message).getContent());
   }
 

@@ -9,7 +9,6 @@ function setConnected(connected) {
     else {
         $("#conversation").hide();
     }
-    $("#greetings").html("");
 }
 
 function connect() {
@@ -18,10 +17,41 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-            showGreeting(greeting.body);
+        stompClient.subscribe('/topic/greetings', function (message) {
+            getMessages(function(data){
+              $("#message-table").html("");
+              getMessagePage(data["page"]["totalPages"]-1);
+              showMessage(message.body);
+            })
         });
+        renderPageBar();
     });
+}
+
+function renderPageBar(){
+  $(".page-bar").html("");
+  getMessages(function(data){
+    for(var i = 1 ; i <= data["page"]["totalPages"]; i++){
+      $(".page-bar").append("<a href=\"#\" class=\"page-index\"> " + i + "</a>");
+    }
+    $(".page-index").on("click", function(event){
+        event.preventDefault();
+        $("#message-table").html("");
+        getMessagePage($(this).text()-1);
+    })
+  });
+}
+
+function getMessages(done){
+  $.get("/messages?size=15").done(done);
+}
+
+function getMessagePage(page){
+  return $.get("/messages?size=15&page="+page).done(function(data){
+    $.each(data["_embedded"]["messages"],function(index, message){
+      showMessage(message["content"]);
+    });
+  })();
 }
 
 function disconnect() {
@@ -36,8 +66,8 @@ function sendName() {
     stompClient.send("/app/hello", {}, JSON.stringify({'content': $("#message").val()}));
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+function showMessage(message) {
+      $("#message-table").append("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {
