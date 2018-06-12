@@ -21,7 +21,7 @@ function connect() {
             getMessages(function(data){
               $("#message-table").html("");
               getMessagePage(data["page"]["totalPages"]-1);
-              showMessage(message.body);
+	      renderPageBar();
             })
         });
         renderPageBar();
@@ -51,7 +51,7 @@ function getMessagePage(page){
     $.each(data["_embedded"]["messages"],function(index, message){
       showMessage(message["content"]);
     });
-  })();
+  });
 }
 
 function disconnect() {
