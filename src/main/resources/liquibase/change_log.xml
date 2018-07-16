@@ -21,4 +21,9 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="mkame" id="1531732612070-3">
+        <addColumn tableName="message">
+            <column type="VARCHAR(255)" name="username" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

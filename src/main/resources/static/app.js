@@ -18,40 +18,40 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/greetings', function (message) {
-            getMessages(function(data){
-              $("#message-table").html("");
-              getMessagePage(data["page"]["totalPages"]-1);
-	      renderPageBar();
+            getMessages(function (data) {
+                $("#message-table").html("");
+                getMessagePage(data["page"]["totalPages"] - 1);
+                renderPageBar();
             })
         });
         renderPageBar();
     });
 }
 
-function renderPageBar(){
-  $(".page-bar").html("");
-  getMessages(function(data){
-    for(var i = 1 ; i <= data["page"]["totalPages"]; i++){
-      $(".page-bar").append("<a href=\"#\" class=\"page-index\"> " + i + "</a>");
-    }
-    $(".page-index").on("click", function(event){
-        event.preventDefault();
-        $("#message-table").html("");
-        getMessagePage($(this).text()-1);
-    })
-  });
-}
-
-function getMessages(done){
-  $.get("/messages?size=15").done(done);
-}
-
-function getMessagePage(page){
-  return $.get("/messages?size=15&page="+page).done(function(data){
-    $.each(data["_embedded"]["messages"],function(index, message){
-      showMessage(message["content"]);
+function renderPageBar() {
+    $(".page-bar").html("");
+    getMessages(function (data) {
+        for (var i = 1; i <= data["page"]["totalPages"]; i++) {
+            $(".page-bar").append("<a href=\"#\" class=\"page-index\"> " + i + "</a>");
+        }
+        $(".page-index").on("click", function (event) {
+            event.preventDefault();
+            $("#message-table").html("");
+            getMessagePage($(this).text() - 1);
+        })
     });
-  });
+}
+
+function getMessages(done) {
+    $.get("/messages?size=15").done(done);
+}
+
+function getMessagePage(page) {
+    return $.get("/messages?size=15&page=" + page).done(function (data) {
+        $.each(data["_embedded"]["messages"], function (index, message) {
+            showMessage(message);
+        });
+    });
 }
 
 function disconnect() {
@@ -67,16 +67,23 @@ function sendName() {
 }
 
 function showMessage(message) {
-      $("#message-table").append("<tr><td>" + message + "</td></tr>");
+    $("#message-table").append("<tr><td>" + message["content"] + "</td><td>" + (message["username"] !== null? message["username"]:'Anonymous' )+ "</td></tr>");
 }
 
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $("#connect").click(function () {
+        connect();
+    });
+    $("#disconnect").click(function () {
+        disconnect();
+    });
+    $("#send").click(function () {
+        sendName();
+        $('#message')[0].value = ''
+    });
 });
 
 connect();
