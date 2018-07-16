@@ -4,7 +4,7 @@
 
     <groupId>com.tdk.edu</groupId>
     <artifactId>chatterino</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>chatterino</name>
@@ -14,7 +14,7 @@
         <url>https://github.com/thedikiy/chatterino</url>
         <connection>scm:git:git://github.com/thedikiy/chatterino.git</connection>
         <developerConnection>scm:git:git@github.com:thedikiy/chatterino.git</developerConnection>
-      <tag>v0.0.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <parent>
